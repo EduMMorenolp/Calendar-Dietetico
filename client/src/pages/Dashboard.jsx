@@ -124,7 +124,6 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
-
         <div className="text-center py-2 sm:py-3">
           <p className="text-gray-600 text-sm sm:text-lg">
             Organiza tu semana con estilo y mantén el control de tus actividades
