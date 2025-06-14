@@ -1,16 +1,20 @@
 import { useState } from "react";
 
-const days = [
-  "Lunes",
-  "Martes",
-  "Miércoles",
-  "Jueves",
-  "Viernes",
-  "Sábado",
-  "Domingo",
-];
+interface CalendarCell {
+  image: string | null;
+  text: string;
+  complete: boolean;
+}
 
-const categories = [
+type WeekData = CalendarCell[][];
+
+interface Category {
+  name: string;
+  color: string;
+  icon: string;
+}
+
+const categories: Category[] = [
   { name: "Desayuno", color: "bg-amber-50 border-amber-200", icon: "🌅" },
   { name: "Almuerzo", color: "bg-orange-50 border-orange-200", icon: "☀️" },
   { name: "Merienda", color: "bg-pink-50 border-pink-200", icon: "☕" },
@@ -23,27 +27,39 @@ const categories = [
   { name: "Cuota de placer", color: "bg-blue-50 border-blue-200", icon: "✨" },
 ];
 
+const days: string[] = [
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
+  "Sábado",
+  "Domingo",
+];
+
 export default function Dashboard() {
   const initialWeek = categories.map(() =>
     days.map(() => ({ image: null, text: "", complete: false }))
   );
 
-  const [weeks, setWeeks] = useState([
+  const [weeks, setWeeks] = useState<WeekData[]>([
     JSON.parse(JSON.stringify(initialWeek)),
     JSON.parse(JSON.stringify(initialWeek)),
     JSON.parse(JSON.stringify(initialWeek)),
     JSON.parse(JSON.stringify(initialWeek)),
   ]);
 
-  const [weekIndex, setWeekIndex] = useState(0);
+  const [weekIndex, setWeekIndex] = useState<number>(0);
 
-  const currentWeek = weeks[weekIndex];
+  const currentWeek: WeekData = weeks[weekIndex];
 
   const allCompleteInCurrentWeek = currentWeek.every((row) =>
     row.every((cell) => cell.complete)
   );
 
-  const handleImageChange = (catIndex, dayIndex, file) => {
+  const handleImageChange = (catIndex: number,
+    dayIndex: number,
+    file: File | null) => {
     if (!file) return;
     const updated = [...weeks];
     const cell = updated[weekIndex][catIndex][dayIndex];
@@ -55,7 +71,9 @@ export default function Dashboard() {
     setWeeks(updated);
   };
 
-  const handleTextChange = (catIndex, dayIndex, value) => {
+  const handleTextChange = (catIndex: number,
+    dayIndex: number,
+    value: string) => {
     const updated = [...weeks];
     const cell = updated[weekIndex][catIndex][dayIndex];
 
@@ -65,7 +83,7 @@ export default function Dashboard() {
     setWeeks(updated);
   };
 
-  const removeImage = (catIndex, dayIndex) => {
+  const removeImage = (catIndex: number, dayIndex: number) => {
     const updated = [...weeks];
     const cell = updated[weekIndex][catIndex][dayIndex];
 
@@ -124,7 +142,6 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
-
         <div className="text-center py-2 sm:py-3">
           <p className="text-gray-600 text-sm sm:text-lg">
             Organiza tu semana con estilo y mantén el control de tus actividades
@@ -201,7 +218,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Calendar Cells */}
-                {days.map((day, dayIndex) => {
+                {days.map((_, dayIndex) => {
                   const cell = currentWeek[catIndex][dayIndex];
                   const isWeekend = dayIndex === 5 || dayIndex === 6;
                   return (
@@ -217,7 +234,7 @@ export default function Dashboard() {
                     >
                       {/* Complete indicator */}
                       {cell.complete && (
-                        <div className="absolute top-2 right-2 group relative">
+                        <div className="absolute top-2 right-2 group">
                           <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
                             <span className="text-white text-xs font-bold">
                               ✓
@@ -242,13 +259,11 @@ export default function Dashboard() {
                             type="file"
                             accept="image/*"
                             className="hidden"
-                            onChange={(e) =>
-                              handleImageChange(
-                                catIndex,
-                                dayIndex,
-                                e.target.files[0]
-                              )
-                            }
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              handleImageChange(catIndex, dayIndex, file);
+                            }}
                           />
                         </label>
                       </div>
@@ -352,13 +367,11 @@ export default function Dashboard() {
                               type="file"
                               accept="image/*"
                               className="hidden"
-                              onChange={(e) =>
-                                handleImageChange(
-                                  catIndex,
-                                  dayIndex,
-                                  e.target.files[0]
-                                )
-                              }
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (!file) return;
+                                handleImageChange(catIndex, dayIndex, file);
+                              }}
                             />
                           </label>
                         </div>
