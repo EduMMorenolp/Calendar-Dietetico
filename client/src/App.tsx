@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard.tsx";
 */
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/calendar-dietetico/">
       <Routes>
         <Route path="/" element={<Dashboard />} />
       </Routes>
