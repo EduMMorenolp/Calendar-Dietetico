@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 type FormStatus = 'idle' | 'checking' | 'active' | 'inactive' | 'submitting';
 
@@ -18,6 +19,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
+    const { login: authLogin } = useAuth();
 
     // --- Estados para manejar la lógica de conexión y reintentos ---
     const [serverStatus, setServerStatus] = useState<FormStatus>('checking');
@@ -121,8 +123,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 });
 
                 if (response.ok) {
+                    const data = await response.json();
                     // const data = await response.json();
                     alert('¡Inicio de sesión exitoso!');
+                    authLogin(data.token);
                     onClose(); // Cierra el modal
                     navigate('/dashboard-pro'); // Navega al nuevo dashboard
                 } else {

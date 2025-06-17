@@ -8,14 +8,17 @@ import WeekNavigator from "../components/WeekNavigator";
 import CalendarTable from "../components/CalendarTable";
 import ProgressTracker from "../components/ProgressTracker";
 import SubmitButton from "../components/SubmitButton";
-import AuthModal from "../components/AuthModal";
 
 // La semana inicial se calcula una sola vez
 const initialWeek = categories.map(() =>
   days.map(() => ({ image: null, text: "", complete: false }))
 );
 
-export default function Dashboard() {
+interface DashboardProps {
+  onOpenAuthModal: () => void;
+}
+
+export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
   const [weeks, setWeeks] = useState<WeekData[]>([
     JSON.parse(JSON.stringify(initialWeek)),
     JSON.parse(JSON.stringify(initialWeek)),
@@ -24,7 +27,6 @@ export default function Dashboard() {
   ]);
 
   const [weekIndex, setWeekIndex] = useState<number>(0);
-  const [modalAbierto, setModalAbierto] = useState(false);
 
   // Derivamos el estado para no recalcularlo en cada render
   const currentWeek: WeekData = useMemo(() => weeks[weekIndex], [weeks, weekIndex]);
@@ -98,7 +100,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4">
-        <Header onLoginClick={() => setModalAbierto(true)} />
+        <Header onLoginClick={onOpenAuthModal} />
 
         <div className="text-center py-2 sm:py-3">
           <p className="text-gray-600 text-sm sm:text-lg">
@@ -121,11 +123,6 @@ export default function Dashboard() {
         <SubmitButton
           allCompleteInCurrentWeek={allCompleteInCurrentWeek}
           generarResumen={generarResumen}
-        />
-
-        <AuthModal
-          isOpen={modalAbierto}
-          onClose={() => setModalAbierto(false)}
         />
       </div>
     </div>
