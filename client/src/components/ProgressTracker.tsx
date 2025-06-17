@@ -1,18 +1,14 @@
-// Archivo: src/components/ProgressTracker.tsx
-
-import type { CalendarCell, Category } from "../types/calendar";
+import type { WeekData, Category } from '../types/calendar';
+import { days } from '../constants/data';
 
 interface ProgressTrackerProps {
+    currentWeek: WeekData;
     categories: Category[];
-    currentWeek: CalendarCell[][];
-    days: string[];
 }
 
-export default function ProgressTracker({
-    categories,
-    currentWeek,
-    days,
-}: ProgressTrackerProps) {
+export default function ProgressTracker({ currentWeek, categories }: ProgressTrackerProps) {
+    const totalDays = days.length;
+
     return (
         <div className="mt-8 bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-gray-100">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
@@ -20,11 +16,8 @@ export default function ProgressTracker({
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 {categories.map((category, catIndex) => {
-                    const completed = currentWeek[catIndex].filter(
-                        (cell) => cell.complete
-                    ).length;
-                    const total = days.length;
-                    const percentage = (completed / total) * 100;
+                    const completed = currentWeek[catIndex].filter((cell) => cell.complete).length;
+                    const percentage = (completed / totalDays) * 100;
                     return (
                         <div key={category.name} className="text-center">
                             <div className="flex items-center justify-center gap-2 mb-2">
@@ -40,7 +33,7 @@ export default function ProgressTracker({
                                 ></div>
                             </div>
                             <span className="text-xs text-gray-600">
-                                {completed}/{total}
+                                {completed}/{totalDays}
                             </span>
                         </div>
                     );

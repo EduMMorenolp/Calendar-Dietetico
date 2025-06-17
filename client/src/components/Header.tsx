@@ -1,6 +1,8 @@
-// Archivo: src/components/Header.tsx
+interface HeaderProps {
+    onLoginClick: () => void;
+  }
 
-export default function Header() {
+export default function Header({ onLoginClick }: HeaderProps) {
     return (
         <header className="bg-white border-b border-gray-200 shadow-sm rounded-lg mb-4">
             <div className="px-4 sm:px-6 py-3 sm:py-4">
@@ -8,7 +10,9 @@ export default function Header() {
                     {/* Logo/Brand */}
                     <div className="flex items-center gap-3">
                         <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white text-xs sm:text-sm font-bold">📅</span>
+                            <span className="text-white text-xs sm:text-sm font-bold">
+                                📅
+                            </span>
                         </div>
                         <span className="text-lg sm:text-xl font-bold text-gray-800">
                             Calendario Semanal
@@ -20,7 +24,7 @@ export default function Header() {
                         <p className="text-gray-600 text-xs sm:text-sm text-center">
                             Inicia sesión para guardar tus cambios
                         </p>
-                        <button className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg text-sm">
+                        <button onClick={onLoginClick}  className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg text-sm">
                             Iniciar Sesión
                         </button>
                     </div>
@@ -29,4 +33,3 @@ export default function Header() {
         </header>
     );
 }
-  
