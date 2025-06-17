@@ -1,6 +1,8 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import type { WeekData } from "../types/calendar";
 import { categories, days } from "../constants/data";
+import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
 
 // Importa los nuevos componentes
 import Header from "../components/Header";
@@ -27,6 +29,48 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
   ]);
 
   const [weekIndex, setWeekIndex] = useState<number>(0);
+  const pdfRef = useRef<HTMLDivElement>(null);
+
+  const generarPDF = useCallback(async () => {
+    const input = pdfRef.current;
+    if (input) {
+      try {
+        // Crea un canvas a partir del elemento HTML
+        const canvas = await html2canvas(input, {
+          scale: 2,
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const imgWidth = 210;
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save(`Resumen_Semana_${weekIndex + 1}.pdf`); // Nombre del archivo PDF
+        alert('PDF generado y descargado!');
+
+      } catch (error) {
+        console.error("Error al generar el PDF:", error);
+        alert("Ocurrió un error al generar el PDF.");
+      }
+    } else {
+      alert("No se encontró el contenido para generar el PDF.");
+    }
+  }, [weekIndex]);
 
   // Derivamos el estado para no recalcularlo en cada render
   const currentWeek: WeekData = useMemo(() => weeks[weekIndex], [weeks, weekIndex]);
@@ -80,22 +124,23 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
     });
   }, [weekIndex]);
 
-  const generarResumen = useCallback(() => {
-    let resumen = `📅 Resumen Semana ${weekIndex + 1}\n\n`;
-    categories.forEach((category, catIndex) => {
-      resumen += `🗂️ ${category.name}\n`;
-      days.forEach((day, dayIndex) => {
-        const cell = currentWeek[catIndex][dayIndex];
-        resumen += `- ${day}: ${cell.text || "Sin comentario"}\n`;
-      });
-      resumen += "\n";
-    });
+  // const generarResumen = useCallback(() => {
+  //   let resumen = `📅 Resumen Semana ${weekIndex + 1}\n\n`;
+  //   categories.forEach((category, catIndex) => {
+  //     resumen += `🗂️ ${category.name}\n`;
+  //     days.forEach((day, dayIndex) => {
+  //       const cell = currentWeek[catIndex][dayIndex];
+  //       const imageStatus = cell.image ? " (📸 con foto)" : ""; 
+  //       resumen += `- ${day}: ${cell.text || "Sin comentario"}${imageStatus}\n`;
+  //     });
+  //     resumen += "\n";
+  //   });
 
-    navigator.clipboard.writeText(resumen);
-    alert(
-      "Resumen copiado al portapapeles. ¡Listo para pegar en WhatsApp o correo!"
-    );
-  }, [weekIndex, currentWeek]);
+  //   navigator.clipboard.writeText(resumen);
+  //   alert(
+  //     "Resumen copiado al portapapeles. ¡Listo para pegar en WhatsApp o correo!"
+  //   );
+  // }, [weekIndex, currentWeek]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
@@ -108,21 +153,26 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
           </p>
         </div>
 
-        <WeekNavigator weekIndex={weekIndex} setWeekIndex={setWeekIndex} totalWeeks={4} />
+        <div ref={pdfRef} className="bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            Resumen Semanal - Semana {weekIndex + 1}
+          </h2>
+          <WeekNavigator weekIndex={weekIndex} setWeekIndex={setWeekIndex} totalWeeks={4} />
 
-        <CalendarTable
-          currentWeek={currentWeek}
-          categories={categories}
-          handleImageChange={handleImageChange}
-          handleTextChange={handleTextChange}
-          removeImage={removeImage}
-        />
+          <CalendarTable
+            currentWeek={currentWeek}
+            categories={categories}
+            handleImageChange={handleImageChange}
+            handleTextChange={handleTextChange}
+            removeImage={removeImage}
+          />
 
-        <ProgressTracker currentWeek={currentWeek} categories={categories} />
+          <ProgressTracker currentWeek={currentWeek} categories={categories} />
+        </div>
 
         <SubmitButton
           allCompleteInCurrentWeek={allCompleteInCurrentWeek}
-          generarResumen={generarResumen}
+          generarResumen={generarPDF}
         />
       </div>
     </div>
