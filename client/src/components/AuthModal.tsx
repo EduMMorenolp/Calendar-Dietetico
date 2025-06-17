@@ -219,7 +219,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 )}
                 {serverStatus === 'inactive' && (
                     <p className="text-center text-red-600 mb-4 flex items-center justify-center">
-                        <span className="mr-2 text-xl">⚠️</span> Servidor no disponible. Reintentando...
+                        <span className="mr-2 text-xl">⚠️</span> Servidor no disponible. 🌀 Reintentando...
                     </p>
                 )}
                 {serverStatus === 'active' && (
