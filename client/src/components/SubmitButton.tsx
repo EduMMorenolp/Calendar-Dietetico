@@ -1,12 +1,8 @@
 interface SubmitButtonProps {
-    allCompleteInCurrentWeek: boolean;
     generarResumen: () => void;
 }
 
-export default function SubmitButton({ allCompleteInCurrentWeek, generarResumen }: SubmitButtonProps) {
-    if (!allCompleteInCurrentWeek) {
-        return null;
-    }
+export default function SubmitButton({ generarResumen }: SubmitButtonProps) {
 
     return (
         <div className="mt-8 text-center">
