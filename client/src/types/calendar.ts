@@ -7,6 +7,7 @@ export interface CalendarCell {
 }
 
 export interface Category {
+  id: string;
   name: string;
   color: string;
   icon: string;
