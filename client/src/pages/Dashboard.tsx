@@ -1,10 +1,12 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useRef } from "react";
 import type { WeekData } from "../types/calendar";
 import { categories, days } from "../constants/data";
+import html2canvas from 'html2canvas-pro';
+import jsPDF from 'jspdf';
 
 // Importa los nuevos componentes
 import Header from "../components/Header";
-import WeekNavigator from "../components/WeekNavigator";
+// import WeekNavigator from "../components/WeekNavigator";
 import CalendarTable from "../components/CalendarTable";
 import ProgressTracker from "../components/ProgressTracker";
 import SubmitButton from "../components/SubmitButton";
@@ -27,36 +29,119 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
   ]);
 
   const [weekIndex, setWeekIndex] = useState<number>(0);
+  const pdfRef = useRef<HTMLDivElement>(null);
+
+  setWeekIndex(1)
+
+  const generarPDF = useCallback(async () => {
+    const input = pdfRef.current;
+    if (input) {
+      try {
+        // Crea un canvas a partir del elemento HTML
+        const canvas = await html2canvas(input, {
+          scale: 2,
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const imgWidth = 210;
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save(`Resumen_Semana_${weekIndex + 1}.pdf`);
+        alert('PDF generado y descargado!');
+
+      } catch (error) {
+        console.error("Error al generar el PDF:", error);
+        alert("Ocurrió un error al generar el PDF.");
+      }
+    } else {
+      alert("No se encontró el contenido para generar el PDF.");
+    }
+  }, [weekIndex]);
 
   // Derivamos el estado para no recalcularlo en cada render
   const currentWeek: WeekData = useMemo(() => weeks[weekIndex], [weeks, weekIndex]);
-  const allCompleteInCurrentWeek = useMemo(
-    () => currentWeek.every((row) => row.every((cell) => cell.complete)),
-    [currentWeek]
-  );
 
-  // Limpiamos los Object URLs para prevenir memory leaks
-  useEffect(() => {
-    return () => {
-      weeks.flat(2).forEach(cell => {
-        if (cell.image) {
-          URL.revokeObjectURL(cell.image);
-        }
-      });
-    };
-  }, [weeks]);
-
-  // Envolvemos los handlers en useCallback para optimizar el rendimiento,
-  // evitando que los componentes hijos se re-rendericen innecesariamente.
   const handleImageChange = useCallback((catIndex: number, dayIndex: number, file: File) => {
-    setWeeks((prevWeeks) => {
-      const updated = JSON.parse(JSON.stringify(prevWeeks)); // Deep copy
-      const cell = updated[weekIndex][catIndex][dayIndex];
-      if (cell.image) URL.revokeObjectURL(cell.image);
-      cell.image = URL.createObjectURL(file);
-      cell.complete = !!cell.text || !!file;
-      return updated;
-    });
+    // Si el archivo no es una imagen, o es demasiado grande (opcional, para prevenir problemas)
+    if (!file.type.startsWith('image/')) {
+      alert("Por favor, selecciona un archivo de imagen.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+          console.error("No se pudo obtener el contexto 2D del canvas.");
+          alert("Error interno al procesar la imagen. Inténtalo de nuevo.");
+          return;
+        }
+
+        const MAX_DIMENSION = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_DIMENSION) {
+            height *= MAX_DIMENSION / width;
+            width = MAX_DIMENSION;
+          }
+        } else {
+          if (height > MAX_DIMENSION) {
+            width *= MAX_DIMENSION / height;
+            height = MAX_DIMENSION;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            setWeeks((prevWeeks) => {
+              const updated = JSON.parse(JSON.stringify(prevWeeks)); 
+              const cell = updated[weekIndex][catIndex][dayIndex];
+
+              // Revoca la URL anterior si existe
+              if (cell.image) URL.revokeObjectURL(cell.image);
+
+              cell.image = URL.createObjectURL(blob);
+              cell.complete = !!cell.text || !!blob; // 
+
+              return updated;
+            });
+          } else {
+            console.error("No se pudo crear el Blob de la imagen.");
+            alert("Error al procesar la imagen para guardar.");
+          }
+        }, 'image/jpeg', 0.7); 
+
+      };
+      img.src = e.target?.result as string; 
+    };
+    reader.readAsDataURL(file);
   }, [weekIndex]);
 
   const handleTextChange = useCallback((catIndex: number, dayIndex: number, value: string) => {
@@ -80,23 +165,6 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
     });
   }, [weekIndex]);
 
-  const generarResumen = useCallback(() => {
-    let resumen = `📅 Resumen Semana ${weekIndex + 1}\n\n`;
-    categories.forEach((category, catIndex) => {
-      resumen += `🗂️ ${category.name}\n`;
-      days.forEach((day, dayIndex) => {
-        const cell = currentWeek[catIndex][dayIndex];
-        resumen += `- ${day}: ${cell.text || "Sin comentario"}\n`;
-      });
-      resumen += "\n";
-    });
-
-    navigator.clipboard.writeText(resumen);
-    alert(
-      "Resumen copiado al portapapeles. ¡Listo para pegar en WhatsApp o correo!"
-    );
-  }, [weekIndex, currentWeek]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4">
@@ -108,21 +176,24 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
           </p>
         </div>
 
-        <WeekNavigator weekIndex={weekIndex} setWeekIndex={setWeekIndex} totalWeeks={4} />
+        <div ref={pdfRef} className="bg-white p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            Resumen Semanal
+          </h2>
+          
+          <CalendarTable
+            currentWeek={currentWeek}
+            categories={categories}
+            handleImageChange={handleImageChange}
+            handleTextChange={handleTextChange}
+            removeImage={removeImage}
+          />
 
-        <CalendarTable
-          currentWeek={currentWeek}
-          categories={categories}
-          handleImageChange={handleImageChange}
-          handleTextChange={handleTextChange}
-          removeImage={removeImage}
-        />
-
-        <ProgressTracker currentWeek={currentWeek} categories={categories} />
+          <ProgressTracker currentWeek={currentWeek} categories={categories} />
+        </div>
 
         <SubmitButton
-          allCompleteInCurrentWeek={allCompleteInCurrentWeek}
-          generarResumen={generarResumen}
+          generarResumen={generarPDF}
         />
       </div>
     </div>
