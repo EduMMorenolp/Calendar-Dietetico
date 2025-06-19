@@ -27,9 +27,10 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
     JSON.parse(JSON.stringify(initialWeek)),
     JSON.parse(JSON.stringify(initialWeek)),
   ]);
-
   const [weekIndex, setWeekIndex] = useState<number>(0);
   const pdfRef = useRef<HTMLDivElement>(null);
+  const [currentMobileDayIndex, setCurrentMobileDayIndex] = useState<Map<string, number>>(() => new Map());
+
 
   const generarPDF = useCallback(async () => {
     const input = pdfRef.current;
@@ -72,7 +73,6 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
     }
   }, [weekIndex]);
 
-  // Derivamos el estado para no recalcularlo en cada render
   const currentWeek: WeekData = useMemo(() => weeks[weekIndex], [weeks, weekIndex]);
 
   const handleImageChange = useCallback((catIndex: number, dayIndex: number, file: File) => {
@@ -152,6 +152,17 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
     });
   }, [weekIndex]);
 
+  // Función para actualizar el día visible para una categoría específica
+  const handleMobileDayChange = useCallback((categoryId: string, newDayIndex: number) => {
+    setCurrentMobileDayIndex(prev => {
+      const newMap = new Map(prev);
+      // Asegurarse de que el índice esté dentro de los límites de days
+      const clampedIndex = Math.max(0, Math.min(days.length - 1, newDayIndex));
+      newMap.set(categoryId, clampedIndex);
+      return newMap;
+    });
+  }, []);
+
   const removeImage = useCallback((catIndex: number, dayIndex: number) => {
     setWeeks((prevWeeks) => {
       const updated = JSON.parse(JSON.stringify(prevWeeks));
@@ -186,6 +197,8 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
             handleImageChange={handleImageChange}
             handleTextChange={handleTextChange}
             removeImage={removeImage}
+            currentMobileDayIndex={currentMobileDayIndex}
+            onMobileDayChange={handleMobileDayChange}
           />
 
           <ProgressTracker currentWeek={currentWeek} categories={categories} />
