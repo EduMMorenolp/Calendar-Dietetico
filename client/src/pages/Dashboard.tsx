@@ -139,7 +139,7 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
       };
       img.src = e.target?.result as string; 
     };
-    reader.readAsDataURL(file); // Lee el archivo original como Data URL
+    reader.readAsDataURL(file);
   }, [weekIndex]);
 
   const handleTextChange = useCallback((catIndex: number, dayIndex: number, value: string) => {
