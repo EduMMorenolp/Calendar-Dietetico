@@ -6,7 +6,7 @@ import jsPDF from 'jspdf';
 
 // Importa los nuevos componentes
 import Header from "../components/Header";
-import WeekNavigator from "../components/WeekNavigator";
+// import WeekNavigator from "../components/WeekNavigator";
 import CalendarTable from "../components/CalendarTable";
 import ProgressTracker from "../components/ProgressTracker";
 import SubmitButton from "../components/SubmitButton";
@@ -176,10 +176,9 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
 
         <div ref={pdfRef} className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-            Resumen Semanal - Semana {weekIndex + 1}
+            Resumen Semanal
           </h2>
-          <WeekNavigator weekIndex={weekIndex} setWeekIndex={setWeekIndex} totalWeeks={4} />
-
+          
           <CalendarTable
             currentWeek={currentWeek}
             categories={categories}
