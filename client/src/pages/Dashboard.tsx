@@ -31,6 +31,8 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
   const [weekIndex, setWeekIndex] = useState<number>(0);
   const pdfRef = useRef<HTMLDivElement>(null);
 
+  setWeekIndex(1)
+
   const generarPDF = useCallback(async () => {
     const input = pdfRef.current;
     if (input) {
