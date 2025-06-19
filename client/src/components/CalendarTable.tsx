@@ -93,8 +93,8 @@ export default function CalendarTable({
             <div className="lg:hidden space-y-6">
                 {categories.map((category, catIndex) => {
                     const activeDayIndex = currentMobileDayIndex.get(category.id) || 0;
-                    const cell = currentWeek[catIndex][activeDayIndex]; 
-                    const dayName = days[activeDayIndex]; 
+                    const cell = currentWeek[catIndex][activeDayIndex];
+                    const dayName = days[activeDayIndex];
                     const isWeekend = activeDayIndex === 5 || activeDayIndex === 6;
 
                     return (

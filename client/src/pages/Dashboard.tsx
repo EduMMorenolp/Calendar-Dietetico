@@ -119,7 +119,7 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
         canvas.toBlob((blob) => {
           if (blob) {
             setWeeks((prevWeeks) => {
-              const updated = JSON.parse(JSON.stringify(prevWeeks)); 
+              const updated = JSON.parse(JSON.stringify(prevWeeks));
               const cell = updated[weekIndex][catIndex][dayIndex];
 
               // Revoca la URL anterior si existe
@@ -134,10 +134,10 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
             console.error("No se pudo crear el Blob de la imagen.");
             alert("Error al procesar la imagen para guardar.");
           }
-        }, 'image/jpeg', 0.7); 
+        }, 'image/jpeg', 0.7);
 
       };
-      img.src = e.target?.result as string; 
+      img.src = e.target?.result as string;
     };
     reader.readAsDataURL(file);
   }, [weekIndex]);
