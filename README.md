@@ -1,7 +1,4 @@
-# NutriControl
-
-![NutriControl Logo Placeholder](https://via.placeholder.com/400x200?text=NutriControl+Logo)
-* (logo de la aplicación) *
+![NutriControl Logo Placeholder](NCLogo.png)
 
 ## 🥗 Organiza y Controla Tu Semana Nutricional
 
