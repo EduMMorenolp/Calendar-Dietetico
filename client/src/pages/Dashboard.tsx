@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { useState, useMemo, useCallback, useRef} from "react";
 import type { WeekData } from "../types/calendar";
 import { categories, days } from "../constants/data";
 import html2canvas from 'html2canvas-pro';
