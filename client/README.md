@@ -91,5 +91,5 @@ Para poner en marcha el entorno de desarrollo del frontend:
 
 3.  **Inicia el servidor de desarrollo:**
     ```bash
-    npm start
+    npm run dev
     ```
