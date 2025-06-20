@@ -19,7 +19,7 @@ function App() {
 
   return (
     <AuthProvider>
-      <BrowserRouter basename="/calendar-dietetico/">
+      <BrowserRouter basename="/NutriControl/">
         <Routes>
           {/* Dashboard principal, accesible sin login (o con login) */}
           <Route path="/" element={<Dashboard onOpenAuthModal={handleOpenAuthModal} />} />
