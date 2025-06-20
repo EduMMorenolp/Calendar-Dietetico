@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import type { WeekData } from "../types/calendar";
 import { categories, days } from "../constants/data";
 import html2canvas from 'html2canvas-pro';
@@ -11,6 +11,7 @@ import CalendarTable from "../components/CalendarTable";
 import ProgressTracker from "../components/ProgressTracker";
 import SubmitButton from "../components/SubmitButton";
 import Footer from "../components/Footer";
+import WelcomeModal from "../components/WelcomeModal";
 
 // La semana inicial se calcula una sola vez
 const initialWeek = categories.map(() =>
@@ -28,9 +29,9 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
     JSON.parse(JSON.stringify(initialWeek)),
     JSON.parse(JSON.stringify(initialWeek)),
   ]);
-
-  const weekIndex= 0
+  const weekIndex = 0
   const pdfRef = useRef<HTMLDivElement>(null);
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
 
   const generarPDF = useCallback(async () => {
     const input = pdfRef.current;
@@ -120,7 +121,7 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
         canvas.toBlob((blob) => {
           if (blob) {
             setWeeks((prevWeeks) => {
-              const updated = JSON.parse(JSON.stringify(prevWeeks)); 
+              const updated = JSON.parse(JSON.stringify(prevWeeks));
               const cell = updated[weekIndex][catIndex][dayIndex];
 
               // Revoca la URL anterior si existe
@@ -135,10 +136,10 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
             console.error("No se pudo crear el Blob de la imagen.");
             alert("Error al procesar la imagen para guardar.");
           }
-        }, 'image/jpeg', 0.7); 
+        }, 'image/jpeg', 0.7);
 
       };
-      img.src = e.target?.result as string; 
+      img.src = e.target?.result as string;
     };
     reader.readAsDataURL(file);
   }, [weekIndex]);
@@ -164,6 +165,10 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
     });
   }, [weekIndex]);
 
+  const handleCloseWelcomeModal = useCallback(() => {
+    setIsWelcomeModalOpen(false);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="max-w-7xl mx-auto px-1 sm:px-2">
@@ -174,7 +179,7 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
             Organiza tu semana con estilo y mantén el control de tus actividades
           </p>
         </div>
-        
+
 
         <div ref={pdfRef} className="bg-white p-4 rounded-lg shadow-md">
           <div className="flex items-center justify-center gap-3 m-2">
@@ -188,7 +193,7 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
               Calendario Semanal
             </span>
           </div>
-          
+
           <CalendarTable
             currentWeek={currentWeek}
             categories={categories}
@@ -205,6 +210,11 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
         />
 
         <Footer />
+
+        <WelcomeModal
+          isOpen={isWelcomeModalOpen}
+          onClose={handleCloseWelcomeModal}
+        />
       </div>
     </div>
   );
