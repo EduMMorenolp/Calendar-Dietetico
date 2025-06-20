@@ -1,58 +1,38 @@
-# Calendar-Dietetico
+# NutriControl
 
-## 🧩 Arquitectura del Proyecto
-### 🔐 Autenticación
-- Login y registro de usuarios.
-- Guardar sesión (tokens o localStorage).
+![NutriControl Logo Placeholder](https://via.placeholder.com/400x200?text=NutriControl+Logo)
+* (logo de la aplicación) *
 
-### 🗓️ Calendario Interactivo
-1. Grilla por semana: días (Lunes a Domingo) x categorías (Actividad física, Cuota de placer, etc).
-2. Cada celda:
-- 📸 Subida de foto.
-- 📝 Comentario de texto.
-- ✅ Marca en verde cuando está completa.
+## 🥗 Organiza y Controla Tu Semana Nutricional
 
-### 📤 Envío de Datos
-- Botón “Mandar información” se activa al completar todas las casillas.
-1. Se genera resumen con:
-- Texto + imagen por celda.
-2. Opciones:
-- Enviar por WhatsApp Web.
-- Enviar por correo electrónico.
+**NutriControl** es una aplicación web interactiva diseñada para ayudarte a planificar, seguir y visualizar tu progreso semanal en cualquier área que necesites organizar, con un enfoque especial en hábitos nutricionales y de bienestar. Es la herramienta perfecta para mantener un registro visual de tus metas y actividades diarias.
 
-### ☁️ Base de datos y backend
-- Backend con Node.js + Express.
-- Base de datos: MongoDB (flexible para este tipo de datos).
-- Almacenamiento de imágenes: Cloudinary (o disco del servidor si es local).
+## ✨ Características Principales
 
-### ⚙️ Stack Tecnológico
-| Componente      | Tecnología                          |
-| --------------- | ----------------------------------- |
-| Frontend        | Vite + React + Tailwind             |
-| Autenticación   | JWT + bcrypt                        |
-| Backend         | Node.js + Express                   |
-| Base de datos   | MongoDB (Mongoose)                  |
-| Subida de fotos | Cloudinary (via API)                |
-| Envío de correo | Nodemailer (backend)                |
-| WhatsApp        | Web API (`https://wa.me/?text=...`) |
+* **Calendario Semanal Interactivo**: Una vista clara y sencilla de tu semana, permitiéndote registrar actividades día a día.
+* **Categorías Personalizables**: Organiza tus entradas bajo categorías predefinidas como Almuerzo, Cena, Couta de placer, etc., cada una con su propio ícono y color para una fácil identificación.
+* **Registro Detallado**: Para cada celda del calendario (día y categoría), puedes:
+    * Añadir **notas y comentarios** específicos.
+    * Subir **imágenes** relevantes (ej. fotos de comidas, progreso físico). Las imágenes se redimensionan para optimizar el rendimiento y la visualización.
+    * Marcar tareas como **"completadas"** para visualizar tu avance de un vistazo.
+* **Generación de PDF**: Convierte tu semana organizada en un documento PDF descargable. Ideal para compartir con tu nutricionista, entrenador, o simplemente para tus registros personales.
+* **Seguimiento de Progreso**: Un indicador visual te muestra cuánto has avanzado en tus metas semanales, motivándote a completar tus objetivos.
+* **Diseño Responsivo**: Disfruta de una experiencia de usuario fluida tanto en dispositivos de escritorio como móviles.
 
-### 📁 Estructura de Carpetas
-```bash
-📦 proyecto-calendario
-┣ 📂 client
-┃ ┣ 📂 src
-┃ ┃ ┣ 📂 components
-┃ ┃ ┣ 📂 pages
-┃ ┃ ┣ 📂 context
-┃ ┃ ┣ 📂 hooks
-┃ ┃ ┣ 📂 services (peticiones al backend)
-┃ ┃ ┗ App.jsx, main.jsx
-┣ 📂 server
-┃ ┣ 📂 controllers
-┃ ┣ 📂 models
-┃ ┣ 📂 routes
-┃ ┣ 📂 middlewares
-┃ ┣ 📄 app.js, index.js
-┣ 📄 .env
-┣ 📄 README.md
-```
+## 🚀 Tecnologías Utilizadas
+
+* **React**: La base de la interfaz de usuario, garantizando una experiencia dinámica y moderna.
+* **TypeScript**: Añade tipado estático, mejorando la robustez, mantenibilidad y escalabilidad del código.
+* **Tailwind CSS**: Para un desarrollo rápido y eficiente de estilos.
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Si tienes ideas para mejorar **NutriControl**, siéntete libre de abrir un *issue* o enviar un *pull request*.
+
+## 📜 Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+
+## 📧 Contacto
+
+¿Preguntas o sugerencias? No dudes en contactarme a través de [e.m.morenolp@gmail.com](mailto:e.m.morenolp@gmail.com) o mi perfil de GitHub.
