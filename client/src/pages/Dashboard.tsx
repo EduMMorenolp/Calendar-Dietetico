@@ -10,6 +10,7 @@ import Header from "../components/Header";
 import CalendarTable from "../components/CalendarTable";
 import ProgressTracker from "../components/ProgressTracker";
 import SubmitButton from "../components/SubmitButton";
+import Footer from "../components/Footer";
 
 // La semana inicial se calcula una sola vez
 const initialWeek = categories.map(() =>
@@ -165,7 +166,7 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4">
+      <div className="max-w-7xl mx-auto px-1 sm:px-2">
         <Header onLoginClick={onOpenAuthModal} />
 
         <div className="text-center py-2 sm:py-3">
@@ -173,11 +174,20 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
             Organiza tu semana con estilo y mantén el control de tus actividades
           </p>
         </div>
+        
 
         <div ref={pdfRef} className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-            Resumen Semanal
-          </h2>
+          <div className="flex items-center justify-center gap-3 m-2">
+            {/* Logo */}
+            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs sm:text-sm font-bold">
+                📅
+              </span>
+            </div>
+            <span className="text-lg sm:text-xl font-bold text-gray-800">
+              Calendario Semanal
+            </span>
+          </div>
           
           <CalendarTable
             currentWeek={currentWeek}
@@ -193,6 +203,8 @@ export default function Dashboard({ onOpenAuthModal }: DashboardProps) {
         <SubmitButton
           generarResumen={generarPDF}
         />
+
+        <Footer />
       </div>
     </div>
   );

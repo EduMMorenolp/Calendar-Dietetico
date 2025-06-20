@@ -9,14 +9,8 @@ export default function Header({ onLoginClick }: HeaderProps) {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
                     {/* Logo/Brand */}
                     <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white text-xs sm:text-sm font-bold">
-                                📅
-                            </span>
-                        </div>
-                        <span className="text-lg sm:text-xl font-bold text-gray-800">
-                            Calendario Semanal
-                        </span>
+                        {/* Logo */}
+                        <img src="public/img/NCLogo.png" alt="NutriControl" className="h-10 w-auto sm:h-12 rounded-lg object-contain"/>
                     </div>
 
                     {/* Login Section */}
