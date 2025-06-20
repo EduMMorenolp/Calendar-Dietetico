@@ -81,6 +81,7 @@ Para poner en marcha el entorno de desarrollo del frontend:
     ```bash
     git clone https://github.com/EduMMorenolp/NutriControl.git
     cd NutriControl
+    cd client
     ```
 
 2.  **Instala las dependencias:**
