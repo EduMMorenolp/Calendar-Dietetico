@@ -10,7 +10,7 @@ export default function Header({ onLoginClick }: HeaderProps) {
                     {/* Logo/Brand */}
                     <div className="flex items-center gap-3">
                         {/* Logo */}
-                        <img src="/img/NCLogo.png" alt="NutriControl" className="h-10 w-auto sm:h-12 rounded-lg object-contain"/>
+                        <img src="img/NCLogo.png" alt="NutriControl" className="h-10 w-auto sm:h-12 rounded-lg object-contain"/>
                     </div>
 
                     {/* Login Section */}
